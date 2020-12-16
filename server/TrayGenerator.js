@@ -63,6 +63,7 @@ class TrayGenerator {
 
   // Creates the tray instance via passing the path to the tray icon
   createTray = () => {
+    // this.tray = new Tray(path.join(__dirname, './assets/IconTemplate.png'));
     this.tray = new Tray(path.join(__dirname, './assets/IconTemplate.png'));
     this.tray.setIgnoreDoubleClickEvents(true);
 
