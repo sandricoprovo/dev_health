@@ -1,6 +1,13 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const Store = require('electron-store');
 const TrayGenerator = require('./TrayGenerator');
+
+// Store schema
+const schema = {
+  launchAtStart: true,
+};
+const store = new Store(schema);
 
 // Windows
 let mainWindow = null;
@@ -54,7 +61,7 @@ const createMainWindow = () => {
 app.on('ready', () => {
   createMainWindow();
   // Instantiating and creating a new tray on app start
-  Tray = new TrayGenerator(mainWindow);
+  Tray = new TrayGenerator(mainWindow, store);
   Tray.createTray();
 });
 
@@ -62,6 +69,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+// Setting the App to open at login when the open is set in the store
+app.setLoginItemSettings({
+  openAtLogin: store.get('launchAtStart'),
 });
 
 // Hiding the dock icon

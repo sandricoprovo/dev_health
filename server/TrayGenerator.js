@@ -2,8 +2,9 @@ const { Tray, Menu } = require('electron');
 const path = require('path');
 
 class TrayGenerator {
-  constructor(mainWindow) {
+  constructor(mainWindow, store) {
     this.tray = null;
+    this.store = store;
     this.mainWindow = mainWindow;
   }
 
@@ -45,6 +46,12 @@ class TrayGenerator {
   rightClickMenu = () => {
     // Creating Array of actions
     const trayMenu = [
+      {
+        label: 'Launch at startup',
+        type: 'checkbox',
+        checked: this.store.get('launchAtStart'),
+        click: (event) => this.store.set('launchAtStart', event.checked),
+      },
       {
         role: 'quit',
         accelerator: 'Command+Q',
