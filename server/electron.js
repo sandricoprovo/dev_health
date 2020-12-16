@@ -35,6 +35,7 @@ const createMainWindow = () => {
     },
   });
 
+  // Handling dev tools if the application is currently in development mode
   if (isDev) {
     // Loading in React Dev Tools
     const {
@@ -51,6 +52,7 @@ const createMainWindow = () => {
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
+  // Loading URL based on which mode the app is in (dev vs prod)
   mainWindow.loadURL(
     isDev
       ? 'http://localhost:1234'
@@ -59,6 +61,7 @@ const createMainWindow = () => {
 };
 
 app.on('ready', () => {
+  // Instantiating a new main window
   createMainWindow();
   // Instantiating and creating a new tray on app start
   Tray = new TrayGenerator(mainWindow, store);
