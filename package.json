@@ -3,19 +3,33 @@
   "productName": "Product Name",
   "version": "1.0.0",
   "description": "",
-  "main": "server/server.js",
+  "main": "server/electron.js",
+  "homepage": "./client/public/",
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=9.0.0",
+    "npm": ">=5.0.0",
+    "yarn": ">=1.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/server.js",
+    "start": "NODE_ENV=development nodemon --exec electron server/electron.js",
     "client": "parcel client/public/index.html -d client/build",
-    "server": "nodemon server/server.js",
-    "build-client": "parcel build client/public/index.html -d client/build"
+    "clean-build": "rm -rf client/build/ .cache dist/",
+    "build-client": "NODE_ENV=production npm run clean-build && parcel build client/public/index.html -d client/build",
+    "electron-build": "NODE_ENV=production electron-builder -mwl"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "electron",
+    "react",
+    "parcel"
+  ],
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-react": "^7.12.10",
     "babel-eslint": "^10.1.0",
+    "electron-builder": "^22.9.1",
     "eslint": "^7.15.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^6.15.0",
@@ -29,11 +43,34 @@
     "prettier": "^2.2.1"
   },
   "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "electron": "^11.1.0",
     "parcel-bundler": "^1.12.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "styled-components": "^5.2.1"
+  },
+  "build": {
+    "appId": "com.dev_health",
+    "files": [
+      "/server/server.js",
+      "src/assets/*",
+      "/client/build/*"
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "/client/src/assets/logo.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "/client/src/assets/logo.png"
+    },
+    "linux": {
+      "target": "deb",
+      "icon": "/client/src/assets/logo.png",
+      "category": "Development"
+    }
   }
 }
