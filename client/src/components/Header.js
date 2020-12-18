@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // Styled Elements
 const Container = styled.header`
-  padding: 4px;
+  padding: 16px 0 16px 0;
 `;
 
 const NavLinks = styled.ul`

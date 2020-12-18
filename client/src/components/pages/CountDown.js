@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 // Imported Components
 import Button from '../Buttons/Button';
+import TimeString from '../TimeString';
 
 // Styled Components
 const Container = styled.section`
@@ -12,12 +13,6 @@ const Container = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`;
-
-const TimeString = styled.h1`
-  font-size: 49px;
-  margin: 16px 0 32px 0;
-  color: white;
 `;
 
 const ButtonContainer = styled.div`
@@ -34,6 +29,8 @@ const CountDown = () => {
   const timeRef = useRef();
 
   const runTimer = () => {
+    setIsTimerActive(true);
+
     timeRef.current =
       runningTime > 0 &&
       setTimeout(() => {
@@ -41,7 +38,9 @@ const CountDown = () => {
         const minutes = Math.floor(runningTime / 60);
         const seconds = runningTime % 60;
         // Updating timeString based on current minutes
-        if (seconds < 10) {
+        if (runningTime < 1) {
+          setTimeString(`00:00`);
+        } else if (seconds < 10) {
           setTimeString(`${minutes}:0${seconds}`);
         } else {
           setTimeString(`${minutes}:${seconds}`);
@@ -49,10 +48,6 @@ const CountDown = () => {
         // Setting current run time in state
         setRunningTime(runningTime - 1);
       }, 1000);
-
-    if (runningTime < 1) {
-      setTimeString(`00:00`);
-    }
   };
 
   const pauseTimer = () => {
@@ -65,7 +60,7 @@ const CountDown = () => {
 
   useEffect(() => {
     // Run timer when button is clicked
-    if (setIsTimerActive) runTimer();
+    if (isTimerActive) runTimer();
 
     return () => {
       clearTimeout(timeRef.current);
@@ -75,7 +70,7 @@ const CountDown = () => {
 
   return (
     <Container>
-      <TimeString>{timeString || '00:00'}</TimeString>
+      <TimeString text={timeString || '00:00'} />
       <ButtonContainer>
         <Button text="Start" action={() => setIsTimerActive(true)} />
         <Button text="Pause" action={pauseTimer} />

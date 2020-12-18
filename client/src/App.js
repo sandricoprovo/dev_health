@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Imported Components
 import Header from './components/Header';
-import CountDown from './components/pages/CountDown';
-import Pomodoro from './components/pages/Pomodoro';
+import CountDown from './components/Pages/CountDown';
+import Pomodoro from './components/Pages/Pomodoro';
 
 const App = () => {
   console.log('app Running');

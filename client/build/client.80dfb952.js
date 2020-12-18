@@ -29772,7 +29772,79 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../../node_modules/react-dom/cjs/react-dom.development.js"}],"../../node_modules/@babel/runtime/helpers/esm/inheritsLoose.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../../node_modules/react-dom/cjs/react-dom.development.js"}],"../../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
+
+  return bundleURL;
+}
+
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"styles/reset.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../../node_modules/@babel/runtime/helpers/esm/inheritsLoose.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35863,7 +35935,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n  padding: 4px;\n"]);
+  var data = _taggedTemplateLiteral(["\n  padding: 16px 0 16px 0;\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -35951,7 +36023,48 @@ Button.propTypes = {
 };
 var _default = Button;
 exports.default = _default;
-},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../src/components/pages/CountDown.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../src/components/TimeString.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  font-size: 49px;\n  margin: 16px 0 32px 0;\n  color: white;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+// Styled elements
+var StyledString = _styledComponents.default.h1(_templateObject());
+
+var TimeString = function TimeString(_ref) {
+  var text = _ref.text;
+  return /*#__PURE__*/_react.default.createElement(StyledString, null, text);
+};
+
+TimeString.propTypes = {
+  text: _propTypes.default.string
+};
+var _default = TimeString;
+exports.default = _default;
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../src/components/Pages/CountDown.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35966,6 +36079,8 @@ var _styledComponents = _interopRequireDefault(require("styled-components"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _Button = _interopRequireDefault(require("../Buttons/Button"));
+
+var _TimeString = _interopRequireDefault(require("../TimeString"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35985,18 +36100,8 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n  width: 60%;\n  display: flex;\n  justify-content: space-evenly;\n  align-items: center;\n"]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n  font-size: 49px;\n  margin: 16px 0 32px 0;\n  color: white;\n"]);
+  var data = _taggedTemplateLiteral(["\n  width: 60%;\n  display: flex;\n  justify-content: space-evenly;\n  align-items: center;\n"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -36020,9 +36125,7 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 // Styled Components
 var Container = _styledComponents.default.section(_templateObject());
 
-var TimeString = _styledComponents.default.h1(_templateObject2());
-
-var ButtonContainer = _styledComponents.default.div(_templateObject3());
+var ButtonContainer = _styledComponents.default.div(_templateObject2());
 
 var CountDown = function CountDown() {
   var _useState = (0, _react.useState)(20 * 60),
@@ -36044,12 +36147,15 @@ var CountDown = function CountDown() {
   var timeRef = (0, _react.useRef)();
 
   var runTimer = function runTimer() {
+    setIsTimerActive(true);
     timeRef.current = runningTime > 0 && setTimeout(function () {
       // Calculating minutes & seconds
       var minutes = Math.floor(runningTime / 60);
       var seconds = runningTime % 60; // Updating timeString based on current minutes
 
-      if (seconds < 10) {
+      if (runningTime < 1) {
+        setTimeString("00:00");
+      } else if (seconds < 10) {
         setTimeString("".concat(minutes, ":0").concat(seconds));
       } else {
         setTimeString("".concat(minutes, ":").concat(seconds));
@@ -36058,10 +36164,6 @@ var CountDown = function CountDown() {
 
       setRunningTime(runningTime - 1);
     }, 1000);
-
-    if (runningTime < 1) {
-      setTimeString("00:00");
-    }
   };
 
   var pauseTimer = function pauseTimer() {
@@ -36074,12 +36176,14 @@ var CountDown = function CountDown() {
 
   (0, _react.useEffect)(function () {
     // Run timer when button is clicked
-    if (setIsTimerActive) runTimer();
+    if (isTimerActive) runTimer();
     return function () {
       clearTimeout(timeRef.current);
     }; // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runningTime, isTimerActive]);
-  return /*#__PURE__*/_react.default.createElement(Container, null, /*#__PURE__*/_react.default.createElement(TimeString, null, timeString || '00:00'), /*#__PURE__*/_react.default.createElement(ButtonContainer, null, /*#__PURE__*/_react.default.createElement(_Button.default, {
+  return /*#__PURE__*/_react.default.createElement(Container, null, /*#__PURE__*/_react.default.createElement(_TimeString.default, {
+    text: timeString || '00:00'
+  }), /*#__PURE__*/_react.default.createElement(ButtonContainer, null, /*#__PURE__*/_react.default.createElement(_Button.default, {
     text: "Start",
     action: function action() {
       return setIsTimerActive(true);
@@ -36095,7 +36199,486 @@ var CountDown = function CountDown() {
 
 var _default = CountDown;
 exports.default = _default;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","prop-types":"../../node_modules/prop-types/index.js","../Buttons/Button":"../src/components/Buttons/Button.js"}],"../src/App.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","prop-types":"../../node_modules/prop-types/index.js","../Buttons/Button":"../src/components/Buttons/Button.js","../TimeString":"../src/components/TimeString.js"}],"../src/components/ActionsContainer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  margin: 16px 0;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+// Styled Elements
+var Container = _styledComponents.default.div(_templateObject());
+
+var ActionsContainer = function ActionsContainer(_ref) {
+  var children = _ref.children;
+  return /*#__PURE__*/_react.default.createElement(Container, null, children);
+};
+
+ActionsContainer.propTypes = {
+  children: _propTypes.default.any
+};
+var _default = ActionsContainer;
+exports.default = _default;
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../src/components/Pomodoro/BreakInterval.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _ActionsContainer = _interopRequireDefault(require("../ActionsContainer"));
+
+var _Button = _interopRequireDefault(require("../Buttons/Button"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Imported Components
+var BreakInterval = function BreakInterval(_ref) {
+  var breakInterval = _ref.breakInterval,
+      updateBreakLength = _ref.updateBreakLength;
+
+  var increaseLength = function increaseLength() {
+    // Bounds check
+    if (breakInterval === 8) return; // Incrementing interval by 1
+
+    var incrementedBreakLength = breakInterval + 1;
+    updateBreakLength(incrementedBreakLength);
+  };
+
+  var decreaseLength = function decreaseLength() {
+    // Bounds check
+    if (breakInterval === 1) return; // Decreasing interval by 1
+
+    var decrementedBreakLength = breakInterval - 1;
+    updateBreakLength(decrementedBreakLength);
+  };
+
+  return /*#__PURE__*/_react.default.createElement(_ActionsContainer.default, null, /*#__PURE__*/_react.default.createElement(_Button.default, {
+    text: "Down",
+    action: decreaseLength
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    style: {
+      color: 'white'
+    }
+  }, breakInterval), /*#__PURE__*/_react.default.createElement(_Button.default, {
+    text: "Up",
+    action: increaseLength
+  }));
+};
+
+BreakInterval.propTypes = {
+  breakInterval: _propTypes.default.number,
+  updateBreakLength: _propTypes.default.func
+};
+var _default = BreakInterval;
+exports.default = _default;
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../ActionsContainer":"../src/components/ActionsContainer.js","../Buttons/Button":"../src/components/Buttons/Button.js"}],"../src/components/Pomodoro/SessionLength.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _ActionsContainer = _interopRequireDefault(require("../ActionsContainer"));
+
+var _Button = _interopRequireDefault(require("../Buttons/Button"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var SessionLength = function SessionLength(_ref) {
+  var sessionLength = _ref.sessionLength,
+      increment = _ref.increment,
+      decrement = _ref.decrement;
+
+  var _useState = (0, _react.useState)(sessionLength),
+      _useState2 = _slicedToArray(_useState, 2),
+      timeLength = _useState2[0],
+      setTimeLength = _useState2[1];
+
+  (0, _react.useEffect)(function () {
+    setTimeLength(sessionLength);
+  }, [sessionLength]);
+  return /*#__PURE__*/_react.default.createElement(_ActionsContainer.default, null, /*#__PURE__*/_react.default.createElement(_Button.default, {
+    text: "Down",
+    action: function action() {
+      return decrement();
+    }
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    style: {
+      color: 'white'
+    }
+  }, timeLength), /*#__PURE__*/_react.default.createElement(_Button.default, {
+    text: "Up",
+    action: function action() {
+      return increment();
+    }
+  }));
+};
+
+SessionLength.propTypes = {
+  sessionLength: _propTypes.default.number,
+  increment: _propTypes.default.func,
+  decrement: _propTypes.default.func
+};
+var _default = SessionLength;
+exports.default = _default;
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../ActionsContainer":"../src/components/ActionsContainer.js","../Buttons/Button":"../src/components/Buttons/Button.js"}],"../src/components/Buttons/ButtonSmall.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  padding: 8px 12px;\n  margin: 0;\n  background-color: #1f1f1f;\n  border: none;\n  border-radius: 5px;\n  color: white;\n  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;\n\n  &:focus {\n    outline: none;\n  }\n\n  &:hover {\n    background-color: #313131;\n  }\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+// Styled Elements
+var ButtonElement = _styledComponents.default.button(_templateObject());
+
+var ButtonSmall = function ButtonSmall(_ref) {
+  var text = _ref.text,
+      action = _ref.action;
+  return /*#__PURE__*/_react.default.createElement(ButtonElement, {
+    type: "button",
+    onClick: action
+  }, text);
+};
+
+ButtonSmall.propTypes = {
+  text: _propTypes.default.string,
+  action: _propTypes.default.func
+};
+var _default = ButtonSmall;
+exports.default = _default;
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../src/components/Pomodoro/Timer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _TimeString = _interopRequireDefault(require("../TimeString"));
+
+var _ButtonSmall = _interopRequireDefault(require("../Buttons/ButtonSmall"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+// Styled Components
+var Container = _styledComponents.default.section(_templateObject());
+
+var Timer = function Timer(_ref) {
+  var breakLength = _ref.breakLength,
+      sessionLength = _ref.sessionLength;
+
+  var _useState = (0, _react.useState)(true),
+      _useState2 = _slicedToArray(_useState, 2),
+      isSession = _useState2[0],
+      setIsSession = _useState2[1];
+
+  var _useState3 = (0, _react.useState)(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      isTimerActive = _useState4[0],
+      setIsTimerActive = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(sessionLength * 60),
+      _useState6 = _slicedToArray(_useState5, 2),
+      timerSeconds = _useState6[0],
+      setTimerSeconds = _useState6[1];
+
+  var _useState7 = (0, _react.useState)("".concat(sessionLength, ":00")),
+      _useState8 = _slicedToArray(_useState7, 2),
+      timerString = _useState8[0],
+      setTimerString = _useState8[1];
+
+  var timerTimeoutRef = (0, _react.useRef)();
+
+  var startTimer = function startTimer() {
+    timerTimeoutRef.current = timerSeconds >= 0 && setTimeout(function () {
+      // TODO: refactor minutes & seconds to account for being less than 10. Maybe switch statement or one liner if statements
+      // Calculating minutes & seconds
+      var minutes = Math.floor(timerSeconds / 60);
+      var seconds = timerSeconds % 60; // Conditionally adding appropriate formatting to seconds
+
+      if (timerSeconds <= 0) {
+        setTimerString("00:00"); // TODO: session has stopped so run break timer code
+
+        console.log('Session ended');
+      } else if (seconds < 10) {
+        setTimerString("".concat(minutes, ":0").concat(seconds));
+      } else {
+        setTimerString("".concat(minutes, ":").concat(seconds));
+      } // Setting current run time in state
+
+
+      setTimerSeconds(timerSeconds - 1);
+    }, 1000);
+  };
+
+  var pauseTimer = function pauseTimer() {
+    if (timerSeconds > 0) clearTimeout(timerTimeoutRef.current);
+  };
+
+  var resumeTimer = function resumeTimer() {
+    startTimer();
+  };
+
+  (0, _react.useEffect)(function () {
+    // Run timer when button is clicked
+    if (isTimerActive && isSession) {
+      startTimer();
+    } else {
+      setTimerSeconds(sessionLength * 60);
+      setTimerString("".concat(sessionLength, ":00"));
+    }
+
+    return function () {
+      clearTimeout(timerTimeoutRef.current);
+    }; // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionLength, timerSeconds, isTimerActive]);
+  return /*#__PURE__*/_react.default.createElement(Container, null, /*#__PURE__*/_react.default.createElement("p", {
+    style: {
+      color: 'white',
+      margin: 'none'
+    }
+  }, isSession === true ? 'Session' : 'Break'), /*#__PURE__*/_react.default.createElement(_TimeString.default, {
+    text: timerString
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    style: {
+      border: '2px solid grey',
+      borderRadius: '5px',
+      width: '141px'
+    }
+  }, !isTimerActive ? /*#__PURE__*/_react.default.createElement(_ButtonSmall.default, {
+    text: "Start",
+    action: function action() {
+      return setIsTimerActive(true);
+    }
+  }) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ButtonSmall.default, {
+    text: "Pause",
+    action: pauseTimer
+  }), /*#__PURE__*/_react.default.createElement(_ButtonSmall.default, {
+    text: "Resume",
+    action: resumeTimer
+  }))));
+};
+
+Timer.propTypes = {
+  breakLength: _propTypes.default.number,
+  sessionLength: _propTypes.default.number
+};
+var _default = Timer;
+exports.default = _default;
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../TimeString":"../src/components/TimeString.js","../Buttons/ButtonSmall":"../src/components/Buttons/ButtonSmall.js"}],"../src/components/Pages/Pomodoro.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _BreakInterval = _interopRequireDefault(require("../Pomodoro/BreakInterval"));
+
+var _SessionLength = _interopRequireDefault(require("../Pomodoro/SessionLength"));
+
+var _Timer = _interopRequireDefault(require("../Pomodoro/Timer"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n  padding: 16px;\n  height: 100%;\n  text-align: center;\n  display: flex;\n  justify-content: space-evenly;\n  align-items: center;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+// Styled Elements
+var Container = _styledComponents.default.section(_templateObject());
+
+var IntervalContainer = _styledComponents.default.div(_templateObject2());
+
+var Pomodoro = function Pomodoro() {
+  var _useState = (0, _react.useState)(5),
+      _useState2 = _slicedToArray(_useState, 2),
+      breakLength = _useState2[0],
+      setBreakLength = _useState2[1];
+
+  var _useState3 = (0, _react.useState)(25),
+      _useState4 = _slicedToArray(_useState3, 2),
+      sessionLength = _useState4[0],
+      setSessionLength = _useState4[1];
+
+  var increaseSessionLength = function increaseSessionLength() {
+    console.log('Adding..'); // Bounds check
+
+    if (sessionLength === 40) return; // Incrementing interval by 1
+
+    setSessionLength(sessionLength + 1);
+  };
+
+  var decreaseSessionLength = function decreaseSessionLength() {
+    // Bounds check
+    if (sessionLength === 1) return; // Decreasing interval by 1
+
+    setSessionLength(sessionLength - 1);
+  };
+
+  return /*#__PURE__*/_react.default.createElement(Container, null, /*#__PURE__*/_react.default.createElement(_Timer.default, {
+    breakLength: breakLength,
+    sessionLength: sessionLength
+  }), /*#__PURE__*/_react.default.createElement(IntervalContainer, null, /*#__PURE__*/_react.default.createElement(_SessionLength.default, {
+    sessionLength: sessionLength,
+    increment: increaseSessionLength,
+    decrement: decreaseSessionLength
+  }), /*#__PURE__*/_react.default.createElement(_BreakInterval.default, {
+    breakInterval: breakLength,
+    updateBreakLength: setBreakLength
+  })));
+};
+
+var _default = Pomodoro;
+exports.default = _default;
+},{"react":"../../node_modules/react/index.js","prop-types":"../../node_modules/prop-types/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../Pomodoro/BreakInterval":"../src/components/Pomodoro/BreakInterval.js","../Pomodoro/SessionLength":"../src/components/Pomodoro/SessionLength.js","../Pomodoro/Timer":"../src/components/Pomodoro/Timer.js"}],"../src/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36109,7 +36692,9 @@ var _reactRouterDom = require("react-router-dom");
 
 var _Header = _interopRequireDefault(require("./components/Header"));
 
-var _CountDown = _interopRequireDefault(require("./components/pages/CountDown"));
+var _CountDown = _interopRequireDefault(require("./components/Pages/CountDown"));
+
+var _Pomodoro = _interopRequireDefault(require("./components/Pages/Pomodoro"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36124,24 +36709,29 @@ var App = function App() {
   return /*#__PURE__*/_react.default.createElement(_reactRouterDom.BrowserRouter, null, /*#__PURE__*/_react.default.createElement(_Header.default, null), /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Switch, null, /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
     path: "/countdown",
     component: _CountDown.default
+  }), /*#__PURE__*/_react.default.createElement(_reactRouterDom.Route, {
+    path: "/pomodoro",
+    component: _Pomodoro.default
   }))));
 };
 
 var _default = App;
 exports.default = _default;
-},{"react":"../../node_modules/react/index.js","react-router-dom":"../../node_modules/react-router-dom/esm/react-router-dom.js","./components/Header":"../src/components/Header.js","./components/pages/CountDown":"../src/components/pages/CountDown.js"}],"../index.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-router-dom":"../../node_modules/react-router-dom/esm/react-router-dom.js","./components/Header":"../src/components/Header.js","./components/Pages/CountDown":"../src/components/Pages/CountDown.js","./components/Pages/Pomodoro":"../src/components/Pages/Pomodoro.js"}],"../index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
 
 var _reactDom = _interopRequireDefault(require("react-dom"));
 
+require("./public/styles/reset.css");
+
 var _App = _interopRequireDefault(require("./src/App"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _reactDom.default.render( /*#__PURE__*/_react.default.createElement(_App.default, null), document.getElementById('root'));
-},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","./src/App":"../src/App.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","./public/styles/reset.css":"styles/reset.css","./src/App":"../src/App.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -36169,7 +36759,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59366" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61332" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
