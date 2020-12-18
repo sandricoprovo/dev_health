@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Imported Components
 import Header from './components/Header';
-import CountDown from './components/CountDown';
+import CountDown from './components/pages/CountDown';
+import Pomodoro from './components/pages/Pomodoro';
 
 const App = () => {
   console.log('app Running');
@@ -18,6 +19,7 @@ const App = () => {
       <main>
         <Switch>
           <Route path="/countdown" component={CountDown} />
+          <Route path="/pomodoro" component={Pomodoro} />
         </Switch>
       </main>
     </Router>

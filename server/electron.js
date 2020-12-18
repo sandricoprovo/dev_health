@@ -21,11 +21,12 @@ if (process.env.NODE_ENV === 'production') {
 // Main Window
 const createMainWindow = () => {
   mainWindow = new BrowserWindow({
-    backgroundColor: '#fff',
+    backgroundColor: '#1f1f1f',
     width: 500,
     height: 250,
     show: false,
     frame: false,
+    title: 'Dev Health',
     fullscreenable: false,
     resizable: false,
     webPreferences: {
@@ -66,6 +67,11 @@ app.on('ready', () => {
   // Instantiating and creating a new tray on app start
   Tray = new TrayGenerator(mainWindow, store);
   Tray.createTray();
+});
+
+// Closes the currently open instance before a hard refresh
+app.on('before-quit', function () {
+  Tray.destroy();
 });
 
 app.on('window-all-closed', () => {

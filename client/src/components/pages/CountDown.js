@@ -1,9 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
+// Imported Components
+import Button from '../Buttons/Button';
+
+// Styled Components
+const Container = styled.section`
+  padding: 8px 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TimeString = styled.h1`
+  font-size: 49px;
+  margin: 16px 0 32px 0;
+  color: white;
+`;
+
+const ButtonContainer = styled.div`
+  width: 60%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+`;
 
 const CountDown = () => {
-  console.log('CountDown Running');
-
-  const [runningTime, setRunningTime] = useState(1 * 60); // User Inputted start
+  const [runningTime, setRunningTime] = useState(20 * 60); // User Inputted start
   const [timeString, setTimeString] = useState('');
   const [isTimerActive, setIsTimerActive] = useState(false);
   const timeRef = useRef();
@@ -17,7 +42,6 @@ const CountDown = () => {
         const seconds = runningTime % 60;
         // Updating timeString based on current minutes
         if (seconds < 10) {
-          console.log(seconds);
           setTimeString(`${minutes}:0${seconds}`);
         } else {
           setTimeString(`${minutes}:${seconds}`);
@@ -50,18 +74,14 @@ const CountDown = () => {
   }, [runningTime, isTimerActive]);
 
   return (
-    <section>
-      <h1>{timeString}</h1>
-      <button type="button" onClick={() => setIsTimerActive(true)}>
-        Start
-      </button>
-      <button type="button" onClick={pauseTimer}>
-        Pause
-      </button>
-      <button type="button" onClick={resumeTimer}>
-        Resume
-      </button>
-    </section>
+    <Container>
+      <TimeString>{timeString || '00:00'}</TimeString>
+      <ButtonContainer>
+        <Button text="Start" action={() => setIsTimerActive(true)} />
+        <Button text="Pause" action={pauseTimer} />
+        <Button text="Resume" action={resumeTimer} />
+      </ButtonContainer>
+    </Container>
   );
 };
 
